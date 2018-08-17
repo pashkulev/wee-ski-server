@@ -4,22 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vankata.weeski.domain.role.Role;
 import com.vankata.weeski.domain.user.Gender;
 import com.vankata.weeski.domain.user.PasswordChangedListener;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 @EntityListeners({
@@ -30,7 +30,7 @@ import java.util.*;
         value = {"createdAd", "updatedAt", "friends", "roles"},
         allowGetters = true
 )
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -76,44 +76,14 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "friend_id"))
     private Set<User> friends;
 
-    @Transient
-    private boolean isAccountNonExpired;
-
-    @Transient
-    private boolean isAccountNonLocked;
-
-    @Transient
-    private boolean isCredentialsNonExpired;
-
-    @Transient
-    private boolean isEnabled;
-
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     public User() {
-        this.setAccountNonExpired(true);
-        this.setAccountNonLocked(true);
-        this.setCredentialsNonExpired(true);
-        this.setEnabled(true);
         this.setFriends(new HashSet<>());
         this.setRoles(new HashSet<>());
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : this.roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getAuthority().name()));
-        }
-        return authorities;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
     }
 }

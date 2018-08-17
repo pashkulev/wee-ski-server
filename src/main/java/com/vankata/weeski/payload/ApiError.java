@@ -1,4 +1,4 @@
-package com.vankata.weeski.error;
+package com.vankata.weeski.payload;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;

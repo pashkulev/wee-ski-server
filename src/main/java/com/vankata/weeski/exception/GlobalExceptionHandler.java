@@ -1,6 +1,6 @@
-//package com.vankata.weeski.controllers;
+//package com.vankata.weeski.controller;
 //
-//import com.vankata.weeski.error.ApiError;
+//import com.vankata.weeski.payload.ApiError;
 //import org.springframework.http.HttpHeaders;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseEntity;
@@ -30,12 +30,12 @@
 //            WebRequest request) {
 //
 //        List<String> errors = new ArrayList<>();
-//        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-//            errors.add(error.getField() + ": " + error.getDefaultMessage());
+//        for (FieldError exception : ex.getBindingResult().getFieldErrors()) {
+//            errors.add(exception.getField() + ": " + exception.getDefaultMessage());
 //        }
 //
-//        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-//            errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
+//        for (ObjectError exception : ex.getBindingResult().getGlobalErrors()) {
+//            errors.add(exception.getObjectName() + ": " + exception.getDefaultMessage());
 //        }
 //
 //        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
@@ -49,9 +49,9 @@
 //            HttpStatus status,
 //            WebRequest request) {
 //
-//        String error = ex.getParameterName() + " parameter is missing";
+//        String exception = ex.getParameterName() + " parameter is missing";
 //
-//        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+//        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), exception);
 //        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 //    }
 //
@@ -75,9 +75,9 @@
 //            MethodArgumentTypeMismatchException ex,
 //            WebRequest request) {
 //
-//        String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
+//        String exception = ex.getName() + " should be of type " + ex.getRequiredType().getName();
 //
-//        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+//        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), exception);
 //        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
 //    }
 //}

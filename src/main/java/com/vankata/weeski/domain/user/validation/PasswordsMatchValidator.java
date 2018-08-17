@@ -1,6 +1,6 @@
 package com.vankata.weeski.domain.user.validation;
 
-import com.vankata.weeski.domain.user.model.UserRegisterModel;
+import com.vankata.weeski.payload.RegisterRequest;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,14 +12,14 @@ public class PasswordsMatchValidator implements ConstraintValidator<PasswordsMat
 
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context){
-        UserRegisterModel user = (UserRegisterModel) obj;
-//        if (user.getPassword() == null && user.getConfirmPassword() == null) {
-//            return true;
-//        }
-//
-//        if (user.getPassword() == null) {
-//            return false;
-//        }
+        RegisterRequest user = (RegisterRequest) obj;
+        if (user.getPassword() == null && user.getConfirmPassword() == null) {
+            return true;
+        }
+
+        if (user.getPassword() == null) {
+            return false;
+        }
 
         return user.getPassword().equals(user.getConfirmPassword());
     }

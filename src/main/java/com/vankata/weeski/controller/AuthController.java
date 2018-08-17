@@ -1,11 +1,9 @@
-package com.vankata.weeski.controllers;
+package com.vankata.weeski.controller;
 
 import com.vankata.weeski.domain.user.exception.EmailExistsException;
 import com.vankata.weeski.domain.user.exception.UserRegistrationValidationException;
-import com.vankata.weeski.domain.user.model.User;
-import com.vankata.weeski.domain.user.model.UserRegisterModel;
-import com.vankata.weeski.domain.user.service.UserService;
-import com.vankata.weeski.error.ApiError;
+import com.vankata.weeski.payload.*;
+import com.vankata.weeski.security.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,34 +13,44 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/api/auth")
+public class AuthController {
 
-    private final UserService userService;
+
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public AuthController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public User register(@Valid @ModelAttribute UserRegisterModel user,
-                         BindingResult bindingResult,
-                         @RequestParam(name = "image", required = false) MultipartFile multipartFile)
-            throws IOException, EmailExistsException, UserRegistrationValidationException {
+    @PostMapping("/login")
+    public ResponseEntity<JwtAuthenticationResponse> authenticateUser(
+            @Valid @RequestBody LoginRequest loginRequest) {
+
+        JwtAuthenticationResponse response = this.authenticationService.login(loginRequest);
+        return new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse> registerUser(
+            @Valid @ModelAttribute RegisterRequest registerRequest,
+            BindingResult bindingResult,
+            @RequestParam(name = "image", required = false) MultipartFile multipartFile) {
 
         if (bindingResult.hasErrors()) {
             throw new UserRegistrationValidationException(bindingResult);
         }
 
-        return this.userService.register(user, multipartFile);
+        // Creating user's account
+        ApiResponse response = this.authenticationService.register(registerRequest, multipartFile);
+        return new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.CREATED);
+
     }
 
     @ExceptionHandler(EmailExistsException.class)
@@ -52,7 +60,7 @@ public class UserController {
 
     @ExceptionHandler(UserRegistrationValidationException.class)
     public ResponseEntity<ApiError> validationFailedHandler(UserRegistrationValidationException ex) {
-         return this.createErrorResponse(UserRegistrationValidationException.class, ex.getErrors());
+        return this.createErrorResponse(UserRegistrationValidationException.class, ex.getErrors());
     }
 
     private ResponseEntity<ApiError> createErrorResponse(
