@@ -40,10 +40,6 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
             Log log = new Log(requestMethod, uri, status, identity);
             this.logRepository.save(log);
-
-            if (ex != null) {
-                System.out.println(ex.toString());
-            }
         }
     }
 }

@@ -70,6 +70,9 @@ public class User {
     @Column(name = "updated_at" ,nullable = false)
     private Instant updatedAt;
 
+    @Column(nullable = false)
+    private Boolean enabled;
+
     @ManyToMany
     @JoinTable(name = "users_friends",
             joinColumns = @JoinColumn(name = "user_id"),

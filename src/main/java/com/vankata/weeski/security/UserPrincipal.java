@@ -26,6 +26,8 @@ public class UserPrincipal implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private String profilePictureUrl;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserPrincipal(String id,
@@ -33,12 +35,14 @@ public class UserPrincipal implements UserDetails {
                          String lastName,
                          String email,
                          String password,
+                         String profilePictureUrl,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.profilePictureUrl = profilePictureUrl;
         this.authorities = authorities;
     }
 
@@ -54,6 +58,7 @@ public class UserPrincipal implements UserDetails {
                 user.getLastName(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getProfilePictureUrl(),
                 authorities
         );
     }

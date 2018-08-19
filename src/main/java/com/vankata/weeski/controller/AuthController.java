@@ -47,7 +47,6 @@ public class AuthController {
             throw new UserRegistrationValidationException(bindingResult);
         }
 
-        // Creating user's account
         ApiResponse response = this.authenticationService.register(registerRequest, multipartFile);
         return new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.CREATED);
 

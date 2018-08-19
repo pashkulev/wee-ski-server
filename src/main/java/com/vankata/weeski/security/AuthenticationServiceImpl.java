@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -59,9 +60,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        User user = this.userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
-        UserPrincipal userPrincipal = this.modelMapper.map(user, UserPrincipal.class);
+//        User user = this.userRepository.findByEmail(loginRequest.getEmail()).orElseThrow();
+//        UserPrincipal userPrincipal = this.modelMapper.map(user, UserPrincipal.class);
         String jwt = tokenProvider.generateToken(authentication);
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         return new JwtAuthenticationResponse(jwt, userPrincipal);
     }
@@ -71,16 +73,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         //todo: try to move this logic to another service or even microservice
         if (imageFile != null) {
             try {
+                String imageBasePath = "D:\\PROGRAMMING\\JAVA\\SOFTUNI\\JS_WEB\\ANGULAR_FUNDAMENTALS\\wee-ski-project\\wee-ski-client\\src\\assets\\images\\profilePictures\\";
                 String name = imageFile.getOriginalFilename();
-                String imagePath = "C:\\Users\\Vankata\\Desktop\\" + name;
+                String extension = name.substring(name.lastIndexOf("."));
+                String fileName = UUID.randomUUID().toString() + extension;
+                String imagePath = imageBasePath + fileName;
                 File targetFile = new File(imagePath);
                 Files.copy(imageFile.getInputStream(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-                registerRequest.setProfilePictureUrl(imagePath);
+                registerRequest.setProfilePictureUrl(fileName);
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
-
         }
 
         Optional<User> optionalUser = this.userRepository.findByEmail(registerRequest.getEmail());
@@ -94,8 +98,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new AppException("User Role not set."));
 
         user.setRoles(Collections.singleton(userRole));
+        user.setEnabled(true);
 
-        User result = userRepository.save(user);
+        userRepository.save(user);
 
 //        URI location = ServletUriComponentsBuilder
 //                .fromCurrentContextPath().path("/api/users/{username}")
