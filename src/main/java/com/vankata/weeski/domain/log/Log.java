@@ -1,13 +1,16 @@
 package com.vankata.weeski.domain.log;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Entity
 @Table(name = "logs")
+@EntityListeners(AuditingEntityListener.class)
 public class Log {
 
     @Id
@@ -26,14 +29,14 @@ public class Log {
     @Column(nullable = false)
     private String identity;
 
+    @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private Instant timestamp;
 
     public Log(String requestMethod, String uri, Integer statusCode, String identity) {
         this.requestMethod = requestMethod;
         this.uri = uri;
         this.statusCode = statusCode;
         this.identity = identity;
-        this.timestamp = LocalDateTime.now();
     }
 }

@@ -2,6 +2,8 @@ package com.vankata.weeski.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,13 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException, ServletException {
         logger.error("Responding with unauthorized exception. Message - {}", e.getMessage());
-        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                "Sorry, You're not authorized to access this resource.");
+        String responseMessage = "Sorry, You're not authorized to access this resource.";
+        if (e instanceof DisabledException) {
+            responseMessage = "Your account is blocked!";
+        } else if (e instanceof BadCredentialsException) {
+            responseMessage = "Invalid username or password!";
+        }
+
+        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, responseMessage);
     }
 }

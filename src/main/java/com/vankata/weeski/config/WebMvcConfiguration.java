@@ -1,6 +1,7 @@
 package com.vankata.weeski.config;
 
 import com.vankata.weeski.interceptors.LoggingInterceptor;
+import com.vankata.weeski.interceptors.UserDeletedInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +15,23 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private static final long MAX_AGE_SECS = 3600;
 
     private final LoggingInterceptor loggingInterceptor;
+    private final UserDeletedInterceptor userDeletedInterceptor;
 
     @Autowired
-    public WebMvcConfiguration(LoggingInterceptor loggingInterceptor) {
+    public WebMvcConfiguration(LoggingInterceptor loggingInterceptor,
+                               UserDeletedInterceptor userDeletedInterceptor) {
         this.loggingInterceptor = loggingInterceptor;
+        this.userDeletedInterceptor = userDeletedInterceptor;
     }
 
     @Bean
-    public MappedInterceptor dbEditorTenantInterceptor() {
+    public MappedInterceptor myLoggingInterceptor() {
         return new MappedInterceptor(new String[]{"/api/**"}, this.loggingInterceptor);
+    }
+
+    @Bean
+    public MappedInterceptor myUserDeletedInterceptor() {
+        return new MappedInterceptor(new String[]{"/api/users/*"}, this.userDeletedInterceptor);
     }
 
     @Override

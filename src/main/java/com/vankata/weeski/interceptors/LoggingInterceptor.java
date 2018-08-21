@@ -28,7 +28,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
                                 Object handler,
                                 Exception ex) throws Exception {
         String requestMethod = request.getMethod();
-        if (!requestMethod.equalsIgnoreCase(GET_METHOD)) {
+        if (!requestMethod.equalsIgnoreCase(GET_METHOD) || response.getStatus() != 200) {
             String uri = request.getRequestURI();
             Integer status = response.getStatus();
             String identity = "anonymous";

@@ -23,6 +23,8 @@ public class UserPrincipal implements UserDetails {
 
     private String email;
 
+    private Boolean enabled;
+
     @JsonIgnore
     private String password;
 
@@ -34,6 +36,7 @@ public class UserPrincipal implements UserDetails {
                          String firstName,
                          String lastName,
                          String email,
+                         Boolean enabled,
                          String password,
                          String profilePictureUrl,
                          Collection<? extends GrantedAuthority> authorities) {
@@ -41,6 +44,7 @@ public class UserPrincipal implements UserDetails {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.enabled = enabled;
         this.password = password;
         this.profilePictureUrl = profilePictureUrl;
         this.authorities = authorities;
@@ -57,6 +61,7 @@ public class UserPrincipal implements UserDetails {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
+                user.getEnabled(),
                 user.getPassword(),
                 user.getProfilePictureUrl(),
                 authorities
@@ -90,7 +95,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
     }
 
     @Override

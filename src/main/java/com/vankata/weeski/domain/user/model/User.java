@@ -3,7 +3,7 @@ package com.vankata.weeski.domain.user.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vankata.weeski.domain.role.Role;
 import com.vankata.weeski.domain.user.Gender;
-import com.vankata.weeski.domain.user.PasswordChangedListener;
+import com.vankata.weeski.domain.user.UserListener;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,7 +15,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,7 +25,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @EntityListeners({
-        PasswordChangedListener.class,
+        UserListener.class,
         AuditingEntityListener.class
 })
 @JsonIgnoreProperties(
@@ -83,10 +85,10 @@ public class User {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private List<Role> roles;
 
     public User() {
         this.setFriends(new HashSet<>());
-        this.setRoles(new HashSet<>());
+        this.setRoles(new ArrayList<>());
     }
 }

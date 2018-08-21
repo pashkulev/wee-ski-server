@@ -1,5 +1,7 @@
 package com.vankata.weeski.controller;
 
+import com.vankata.weeski.domain.blockedEmail.BlockedEmailService;
+import com.vankata.weeski.domain.user.exception.BlockedEmailException;
 import com.vankata.weeski.domain.user.exception.EmailExistsException;
 import com.vankata.weeski.domain.user.exception.UserRegistrationValidationException;
 import com.vankata.weeski.payload.*;
@@ -16,17 +18,18 @@ import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 
-//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
 
     private final AuthenticationService authenticationService;
+    private final BlockedEmailService blockedEmailService;
 
     @Autowired
-    public AuthController(AuthenticationService authenticationService) {
+    public AuthController(AuthenticationService authenticationService, BlockedEmailService blockedEmailService) {
         this.authenticationService = authenticationService;
+        this.blockedEmailService = blockedEmailService;
     }
 
     @PostMapping("/login")
@@ -47,6 +50,10 @@ public class AuthController {
             throw new UserRegistrationValidationException(bindingResult);
         }
 
+        if (this.blockedEmailService.isEmailBlocked(registerRequest.getEmail())) {
+            throw new BlockedEmailException();
+        }
+
         ApiResponse response = this.authenticationService.register(registerRequest, multipartFile);
         return new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.CREATED);
 
@@ -60,6 +67,11 @@ public class AuthController {
     @ExceptionHandler(UserRegistrationValidationException.class)
     public ResponseEntity<ApiError> validationFailedHandler(UserRegistrationValidationException ex) {
         return this.createErrorResponse(UserRegistrationValidationException.class, ex.getErrors());
+    }
+
+    @ExceptionHandler(BlockedEmailException.class)
+    public ResponseEntity<ApiError> blockedEmailHandler() {
+        return this.createErrorResponse(BlockedEmailException.class, Collections.emptyList());
     }
 
     private ResponseEntity<ApiError> createErrorResponse(
