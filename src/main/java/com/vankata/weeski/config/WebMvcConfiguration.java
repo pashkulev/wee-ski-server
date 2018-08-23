@@ -1,5 +1,6 @@
 package com.vankata.weeski.config;
 
+import com.vankata.weeski.interceptors.CourseDeletedInterceptor;
 import com.vankata.weeski.interceptors.LoggingInterceptor;
 import com.vankata.weeski.interceptors.UserDeletedInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final LoggingInterceptor loggingInterceptor;
     private final UserDeletedInterceptor userDeletedInterceptor;
+    private final CourseDeletedInterceptor courseDeletedInterceptor;
 
     @Autowired
     public WebMvcConfiguration(LoggingInterceptor loggingInterceptor,
-                               UserDeletedInterceptor userDeletedInterceptor) {
+                               UserDeletedInterceptor userDeletedInterceptor,
+                               CourseDeletedInterceptor courseDeletedInterceptor) {
         this.loggingInterceptor = loggingInterceptor;
         this.userDeletedInterceptor = userDeletedInterceptor;
+        this.courseDeletedInterceptor = courseDeletedInterceptor;
     }
 
     @Bean
@@ -32,6 +36,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Bean
     public MappedInterceptor myUserDeletedInterceptor() {
         return new MappedInterceptor(new String[]{"/api/users/*"}, this.userDeletedInterceptor);
+    }
+
+    @Bean
+    public MappedInterceptor myCourseDeletedInterceptor() {
+        return new MappedInterceptor(new String[]{"/api/courses/*"}, this.courseDeletedInterceptor);
     }
 
     @Override

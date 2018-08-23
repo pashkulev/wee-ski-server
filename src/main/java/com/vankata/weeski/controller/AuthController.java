@@ -3,7 +3,7 @@ package com.vankata.weeski.controller;
 import com.vankata.weeski.domain.blockedEmail.BlockedEmailService;
 import com.vankata.weeski.domain.user.exception.BlockedEmailException;
 import com.vankata.weeski.domain.user.exception.EmailExistsException;
-import com.vankata.weeski.domain.user.exception.UserRegistrationValidationException;
+import com.vankata.weeski.exception.ValidationException;
 import com.vankata.weeski.payload.*;
 import com.vankata.weeski.security.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class AuthController {
             @RequestParam(name = "image", required = false) MultipartFile multipartFile) {
 
         if (bindingResult.hasErrors()) {
-            throw new UserRegistrationValidationException(bindingResult);
+            throw new ValidationException(bindingResult);
         }
 
         if (this.blockedEmailService.isEmailBlocked(registerRequest.getEmail())) {
@@ -64,9 +64,9 @@ public class AuthController {
         return this.createErrorResponse(EmailExistsException.class, Collections.emptyList());
     }
 
-    @ExceptionHandler(UserRegistrationValidationException.class)
-    public ResponseEntity<ApiError> validationFailedHandler(UserRegistrationValidationException ex) {
-        return this.createErrorResponse(UserRegistrationValidationException.class, ex.getErrors());
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ApiError> validationFailedHandler(ValidationException ex) {
+        return this.createErrorResponse(ValidationException.class, ex.getErrors());
     }
 
     @ExceptionHandler(BlockedEmailException.class)

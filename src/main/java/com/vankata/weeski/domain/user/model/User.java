@@ -58,8 +58,8 @@ public class User {
     @Column
     private String country;
 
-    @Column(name = "profile_picture_url")
-    private String profilePictureUrl;
+    @Column(name = "profile_picture")
+    private String profilePicture;
 
     @Column(nullable = false)
     private String password;

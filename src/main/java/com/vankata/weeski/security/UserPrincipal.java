@@ -28,7 +28,7 @@ public class UserPrincipal implements UserDetails {
     @JsonIgnore
     private String password;
 
-    private String profilePictureUrl;
+    private String profilePicture;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -38,7 +38,7 @@ public class UserPrincipal implements UserDetails {
                          String email,
                          Boolean enabled,
                          String password,
-                         String profilePictureUrl,
+                         String profilePicture,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.firstName = firstName;
@@ -46,7 +46,7 @@ public class UserPrincipal implements UserDetails {
         this.email = email;
         this.enabled = enabled;
         this.password = password;
-        this.profilePictureUrl = profilePictureUrl;
+        this.profilePicture = profilePicture;
         this.authorities = authorities;
     }
 
@@ -63,7 +63,7 @@ public class UserPrincipal implements UserDetails {
                 user.getEmail(),
                 user.getEnabled(),
                 user.getPassword(),
-                user.getProfilePictureUrl(),
+                user.getProfilePicture(),
                 authorities
         );
     }

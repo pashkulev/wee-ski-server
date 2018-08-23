@@ -1,4 +1,4 @@
-package com.vankata.weeski.domain.user.exception;
+package com.vankata.weeski.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Validation failed!")
-public class UserRegistrationValidationException extends RuntimeException {
+public class ValidationException extends RuntimeException {
 
     private List<String> errors;
 
-    public UserRegistrationValidationException(BindingResult bindingResult) {
+    public ValidationException(BindingResult bindingResult) {
         super();
         this.setErrors(bindingResult);
     }

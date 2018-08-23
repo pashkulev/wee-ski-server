@@ -12,25 +12,23 @@ import java.util.UUID;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private static final String IMAGE_BASE_PATH =
-            "D:\\PROGRAMMING\\JAVA\\SOFTUNI\\JS_WEB\\ANGULAR_FUNDAMENTALS\\wee-ski-project\\images\\profilePictures\\";
+    private static final String IMAGES_BASE_PATH =
+            "D:\\PROGRAMMING\\JAVA\\SOFTUNI\\JS_WEB\\ANGULAR_FUNDAMENTALS\\wee-ski-project\\images\\";
 
     @Override
-    public String uploadFile(MultipartFile multipartFile) {
-        //todo: try to move this logic to another service or even microservice
+    public String uploadFile(MultipartFile multipartFile, String targetFolder) {
         String fileName = null;
         try {
-
             String name = multipartFile.getOriginalFilename();
             String extension = name.substring(name.lastIndexOf("."));
             fileName = UUID.randomUUID().toString() + extension;
-            String imagePath = IMAGE_BASE_PATH + fileName;
+            String imagePath = IMAGES_BASE_PATH + targetFolder + fileName;
             File targetFile = new File(imagePath);
             Files.copy(multipartFile.getInputStream(),
                     targetFile.toPath(),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            System.err.println(ex);
         }
 
         return fileName;
@@ -38,7 +36,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean deleteFile(String filePath) {
-        File file = new File(IMAGE_BASE_PATH + filePath);
+        File file = new File(IMAGES_BASE_PATH + filePath);
         return file.delete();
     }
 }

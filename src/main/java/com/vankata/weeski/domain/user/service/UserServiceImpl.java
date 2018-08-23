@@ -6,6 +6,7 @@ import com.vankata.weeski.domain.role.service.RoleService;
 import com.vankata.weeski.domain.user.exception.UserNotFoundException;
 import com.vankata.weeski.domain.user.model.User;
 import com.vankata.weeski.domain.user.repository.UserRepository;
+import com.vankata.weeski.exception.ResourceNotFoundException;
 import com.vankata.weeski.payload.ApiResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(String id) {
-        return this.userRepository
-                .findById(id)
-                .orElse(null);
+        Optional<User> optionalUser = this.userRepository.findById(id);
+        if (!optionalUser.isPresent()) {
+            throw new ResourceNotFoundException("User", "id", id);
+        }
+        return optionalUser.get();
     }
 
     @Override

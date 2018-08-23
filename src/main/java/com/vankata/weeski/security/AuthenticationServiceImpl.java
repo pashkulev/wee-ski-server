@@ -27,6 +27,8 @@ import java.util.Optional;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    private static final String PROFILE_PICTURES_FOLDER = "users\\profilePictures\\";
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final FileService fileService;
@@ -67,8 +69,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public ApiResponse register(RegisterRequest registerRequest, MultipartFile imageFile) {
         if (imageFile != null) {
-            String fileName = this.fileService.uploadFile(imageFile);
-            registerRequest.setProfilePictureUrl(fileName);
+            String fileName = this.fileService.uploadFile(imageFile, PROFILE_PICTURES_FOLDER);
+            registerRequest.setProfilePicture(fileName);
         }
 
         Optional<User> optionalUser = this.userRepository.findByEmail(registerRequest.getEmail());

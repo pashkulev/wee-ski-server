@@ -31,5 +31,5 @@ public class RegisterRequest {
     @Size(min = 4, message = "Confirm Password should contain at least 4 characters!")
     private String confirmPassword;
 
-    private String profilePictureUrl;
+    private String profilePicture;
 }

@@ -1,13 +1,12 @@
 package com.vankata.weeski.domain.course.models;
 
-import com.vankata.weeski.domain.course.CourseLevel;
+import com.vankata.weeski.domain.course.enums.CourseLevel;
+import com.vankata.weeski.domain.course.enums.SkiDiscipline;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Entity
@@ -27,14 +26,18 @@ public class Course {
     @Column(nullable = false)
     private CourseLevel level;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private SkiDiscipline discipline;
+
+    @Column(columnDefinition = "TEXT NOT NULL")
     private String description;
 
     @Column(nullable = false)
     private double price;
 
-    @ElementCollection
-    private Set<String> images = new HashSet<>();
+    @Column(nullable = false)
+    private String image;
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
