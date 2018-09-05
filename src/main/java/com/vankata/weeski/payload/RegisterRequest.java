@@ -14,7 +14,7 @@ public class RegisterRequest {
     @Pattern(regexp = "^[A-Z][a-z]+$", message = "Invalid First Name! Should start with capital letter followed by 1 or more lowercase english letters!")
     private String firstName;
 
-    @Pattern(regexp = "^[A-Z][a-z]+(\\s?[A-Z][a-z]+)?$", message = "Invalid First Name! Should start with capital letter followed by 1 or more lowercase english letters!")
+    @Pattern(regexp = "^[A-Z][a-z]+(\\s?[A-Z][a-z]+)?$", message = "Invalid Last Name! Should start with capital letter followed by 1 or more lowercase english letters!")
     private String lastName;
 
     @NotBlank

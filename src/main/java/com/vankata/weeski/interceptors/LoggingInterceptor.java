@@ -1,7 +1,7 @@
 package com.vankata.weeski.interceptors;
 
-import com.vankata.weeski.domain.log.Log;
-import com.vankata.weeski.domain.log.LogRepository;
+import com.vankata.weeski.domain.log.model.Log;
+import com.vankata.weeski.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

@@ -1,9 +1,10 @@
 package com.vankata.weeski.domain.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.vankata.weeski.domain.role.Role;
-import com.vankata.weeski.domain.user.Gender;
-import com.vankata.weeski.domain.user.UserListener;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vankata.weeski.domain.course.model.Course;
+import com.vankata.weeski.domain.role.model.Role;
+import com.vankata.weeski.domain.user.enums.Gender;
+import com.vankata.weeski.domain.user.listener.UserListener;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,10 +29,6 @@ import java.util.Set;
         UserListener.class,
         AuditingEntityListener.class
 })
-@JsonIgnoreProperties(
-        value = {"createdAd", "updatedAt", "friends", "roles"},
-        allowGetters = true
-)
 public class User {
 
     @Id
@@ -61,6 +58,10 @@ public class User {
     @Column(name = "profile_picture")
     private String profilePicture;
 
+    @Column(name = "cover_photo")
+    private String coverPhoto;
+
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -80,6 +81,9 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id"))
     private Set<User> friends;
+
+    @ManyToMany(mappedBy = "participants")
+    private List<Course> courses;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",

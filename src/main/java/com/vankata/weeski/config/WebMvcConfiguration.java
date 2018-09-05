@@ -50,10 +50,4 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .allowedMethods("HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE")
                 .maxAge(MAX_AGE_SECS);
     }
-
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(this.loggingInterceptor)
-//                .addPathPatterns("/api/**");
-//    }
 }

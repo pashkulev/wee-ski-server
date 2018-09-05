@@ -1,9 +1,9 @@
 package com.vankata.weeski.interceptors;
 
-import com.vankata.weeski.domain.blockedEmail.BlockedEmailService;
+import com.vankata.weeski.service.BlockedEmailService;
 import com.vankata.weeski.domain.user.model.User;
-import com.vankata.weeski.domain.user.service.UserService;
-import com.vankata.weeski.util.FileService;
+import com.vankata.weeski.service.UserService;
+import com.vankata.weeski.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

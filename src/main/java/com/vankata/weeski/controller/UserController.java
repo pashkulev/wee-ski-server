@@ -1,7 +1,7 @@
 package com.vankata.weeski.controller;
 
-import com.vankata.weeski.domain.role.Authority;
-import com.vankata.weeski.domain.user.service.UserService;
+import com.vankata.weeski.domain.role.enums.Authority;
+import com.vankata.weeski.service.UserService;
 import com.vankata.weeski.payload.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,11 +21,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PatchMapping("/{id}/authorities")
+    @PatchMapping("/{userId}/authorities")
     @PreAuthorize("hasAuthority('ROLE_ROOT_ADMIN')")
     public ResponseEntity<ApiResponse> setAuthorities(@RequestBody Authority[] authorities,
-                                                      @PathVariable String id) {
-        ApiResponse response = this.userService.setUserAuthorities(id, authorities);
+                                                      @PathVariable String userId) {
+        ApiResponse response = this.userService.setUserAuthorities(userId, authorities);
         return new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.OK);
     }
 }

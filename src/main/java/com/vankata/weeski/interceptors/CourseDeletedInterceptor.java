@@ -1,8 +1,8 @@
 package com.vankata.weeski.interceptors;
 
-import com.vankata.weeski.domain.course.models.CourseServiceModel;
-import com.vankata.weeski.domain.course.service.CourseService;
-import com.vankata.weeski.util.FileService;
+import com.vankata.weeski.domain.course.model.CourseServiceModel;
+import com.vankata.weeski.service.CourseService;
+import com.vankata.weeski.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

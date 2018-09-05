@@ -3,7 +3,6 @@ package com.vankata.weeski.config;
 import com.vankata.weeski.security.JwtAuthenticationEntryPoint;
 import com.vankata.weeski.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,35 +20,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true
-)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
+
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
+
     private final PasswordEncoder passwordEncoder;
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Autowired
-    public SecurityConfiguration(@Qualifier("userDetailsService") UserDetailsService userDetailsService,
+    public SecurityConfiguration(UserDetailsService userDetailsService,
                                  JwtAuthenticationEntryPoint unauthorizedHandler,
-                                 PasswordEncoder passwordEncoder) {
+                                 PasswordEncoder passwordEncoder,
+                                 JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
+                .userDetailsService(this.userDetailsService)
                 .passwordEncoder(this.passwordEncoder);
     }
 
@@ -73,28 +69,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
                 .antMatchers("/api/auth/**")
-                .permitAll()
-                .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
-                .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/courses/**", "/api/gatherings/**")
+                .anonymous()
+                .antMatchers(HttpMethod.GET, "/api/courses/**", "/api/gatherings/**", "/api/resorts/**")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/api/courses").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/api/logs", "/api/users/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api/logs/**", "/api/users", "/api/roles/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest()
                 .authenticated();
 
         // Add our custom JWT security filter
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

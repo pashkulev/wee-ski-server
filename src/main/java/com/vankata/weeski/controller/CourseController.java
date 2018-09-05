@@ -1,8 +1,9 @@
 package com.vankata.weeski.controller;
 
-import com.vankata.weeski.domain.course.models.CourseCreateModel;
-import com.vankata.weeski.domain.course.models.CourseServiceModel;
-import com.vankata.weeski.domain.course.service.CourseService;
+import com.vankata.weeski.domain.course.enums.SkiDiscipline;
+import com.vankata.weeski.domain.course.model.CourseCreateModel;
+import com.vankata.weeski.domain.course.model.CourseServiceModel;
+import com.vankata.weeski.service.CourseService;
 import com.vankata.weeski.exception.ValidationException;
 import com.vankata.weeski.payload.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -53,21 +55,27 @@ public class CourseController {
         }
 
         ApiResponse response = this.courseService.updateCourse(course, id, imageFile);
-        return new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.OK);
     }
 
-//    @GetMapping
-//    public List<CourseServiceModel> allCourses(@RequestParam SkiDiscipline discipline) {
-//        return this.courseService.findAll();
-//    }
+    @GetMapping("/filter")
+    public List<CourseServiceModel> allCourses(@RequestParam SkiDiscipline discipline) {
+        return this.courseService.findByDiscipline(discipline);
+    }
 
     @GetMapping("/active")
     public List<CourseServiceModel> activeCourses() {
         return this.courseService.getActiveCourses();
     }
 
-    @GetMapping("/recent")
-    public List<CourseServiceModel> upcomingFiveCourses() {
-        return this.courseService.getUpcomingFiveCourses();
+    @GetMapping("/upcoming")
+    public List<CourseServiceModel> upcomingThreeCourses() {
+        return this.courseService.getUpcomingThreeCourses();
+    }
+
+    @PatchMapping("/{courseId}/enroll")
+    public ResponseEntity<ApiResponse> enroll(@PathVariable String courseId, Principal principal) {
+        ApiResponse response = this.courseService.enrollParticipant(courseId, principal);
+        return new ResponseEntity<>(response, new HttpHeaders(), HttpStatus.OK);
     }
 }

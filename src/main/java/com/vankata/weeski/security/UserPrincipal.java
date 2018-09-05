@@ -32,7 +32,7 @@ public class UserPrincipal implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(String id,
+    private UserPrincipal(String id,
                          String firstName,
                          String lastName,
                          String email,
