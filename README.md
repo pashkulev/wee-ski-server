@@ -11,7 +11,7 @@
 
 - [Final Notes](#final-notes)
 
-##Wee-Ski Project Description
+## Wee-Ski Project Description
 The Wee-Ski project is intended to serve as a social network for
 like minded skiers, mountain lovers and enthusiasts. Registered users
 should be able to communicate with each other, organize gatherings,
@@ -20,7 +20,7 @@ around the world. And since I am a ski instructor, and also the developer
 of this application, it also advertises the different courses I'm
 planning to organize.
 
-##Wee-Ski Server Description
+## Wee-Ski Server Description
 The Wee-Ski Spring Boot Server provides a REST API for my Wee-Ski Angular Application. 
 It uses MySql database, Hibernate with Spring Data JPA on top of it, 
 Spring Data Rest, HATEOAS and Spring Security with JWT authentication.
