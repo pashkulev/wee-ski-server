@@ -70,14 +70,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ApiResponse register(RegisterRequest registerRequest, MultipartFile imageFile) {
-        if (imageFile != null) {
-            String fileName = this.fileService.uploadFile(imageFile, PROFILE_PICTURES_FOLDER);
-            registerRequest.setProfilePicture(fileName);
-        }
-
         Optional<User> optionalUser = this.userRepository.findByEmail(registerRequest.getEmail());
         if (optionalUser.isPresent()) {
             throw new EmailExistsException();
+        }
+
+        if (imageFile != null) {
+            String fileName = this.fileService.uploadFile(imageFile, PROFILE_PICTURES_FOLDER);
+            registerRequest.setProfilePicture(fileName);
         }
 
         User user = this.modelMapper.map(registerRequest, User.class);

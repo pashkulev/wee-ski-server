@@ -15,18 +15,23 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    private static final String UNAUTHORIZED_MESSAGE = "Sorry, You're not authorized to access this resource.";
+    private static final String BLOCKED_ACCOUNT_MESSAGE = "Your account is blocked!";
+    private static final String INVALID_CREDENTIALS_MESSAGE = "Invalid email or password!";
+    private static final String LOGGING_TEMPLATE_MESSAGE = "Responding with unauthorized exception. Message - {}";
+
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationEntryPoint.class);
 
     @Override
     public void commence(HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException {
-        logger.error("Responding with unauthorized exception. Message - {}", e.getMessage());
-        String responseMessage = "Sorry, You're not authorized to access this resource.";
+        logger.error(LOGGING_TEMPLATE_MESSAGE, e.getMessage());
+        String responseMessage = UNAUTHORIZED_MESSAGE;
         if (e instanceof DisabledException) {
-            responseMessage = "Your account is blocked!";
+            responseMessage = BLOCKED_ACCOUNT_MESSAGE;
         } else if (e instanceof BadCredentialsException) {
-            responseMessage = "Invalid username or password!";
+            responseMessage = INVALID_CREDENTIALS_MESSAGE;
         }
 
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, responseMessage);

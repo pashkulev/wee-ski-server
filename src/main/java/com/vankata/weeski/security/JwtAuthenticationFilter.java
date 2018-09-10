@@ -21,11 +21,15 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String LOGGER_ERROR_MESSAGE = "Could not set user authentication in security context";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
     private final JwtTokenProvider tokenProvider;
 
     private final UserDetailsServiceImpl userDetailsService;
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Autowired
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, UserDetailsServiceImpl userDetailsService) {
@@ -49,14 +53,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            logger.error(LOGGER_ERROR_MESSAGE, ex);
         }
 
         filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
